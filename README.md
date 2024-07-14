@@ -1,4 +1,5 @@
-This is the template for PhD and Master's Thesis given to Konya Food and Agriculture University.
+# Konya Food ang Agriculture University Thesis/Report Template
+This is the template for PhD and Master's Thesis given to Konya Food and Agriculture University to run under Overleaf.
 
 In order to run this template, you need to set your LaTeX compiler as ```LuaLateX``` in Overleaf.
 
@@ -6,17 +7,16 @@ In order to run this template, you need to set your LaTeX compiler as ```LuaLate
 
 You need to fill in at least ``preamble.tex`` in order to customize.
 
-Your main text will be ``main.tex``. Please examine it and use supplied examples.
+Your main text will be ``main.tex``. Please use the figures, tables, equations and algoritms as examples.
 
 The other files as follows:
 
-``abbrev.tex``: List of Abbreviations
-
-``cv.tex``: You CV (required for PhD, not required for Master's Thesis)
-
-``supplementary.txt``: Additional material, tables, figures, pictures, that don't fit anywhere in the mail text.
-
 ``references.bib``: Your reference list in biblatex format.
 
-You don't have to change anything in ``start.tex`` and ``end.tex`` unless the format changes radically.
+``abbrev.tex``: List of Abbreviations
+
+``cv.tex``: Your CV (required for PhD, not required for Master's Thesis). The format is explained in the sample CV.
+
+``supplementary.tex``: Additional material, tables, figures, pictures, that don't fit anywhere in the mail text.
+
 
