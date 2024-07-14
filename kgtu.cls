@@ -6,7 +6,6 @@
 %cv.tex - CV in free format, only required for PhD Thesis
 %references.bib - References in biblatex format.
 
-
 \LoadClass[12pt,a4paper]{report}
 %\LoadClass[12pt,a4paper,twoside]{report}
 
@@ -43,12 +42,16 @@
 \RequirePackage{fontspec}
 \RequirePackage[normalem]{ulem}
 \RequirePackage{enumitem}
+\RequirePackage{listofitems}
+
 
 % \RequirePackage{lmodern}
 % \RequirePackage{newtxtext}
 % \RequirePackage{newtxmath}
 
-
+% \newcommand{\approvaldate}[1]{\def\@approvaldate{#1}}
+% \newcommand{\monthyear}[1]{\def\@monthyear{#1}}
+% \newcommand{\monthyeartr}[1]{\def\@monthyeartr{#1}}
 
 \setmainfont{Times New Roman}
 
@@ -208,8 +211,7 @@
 \newcommand{\thesisdegree}[1]{\def\@thesisdegree{#1}}
 \newcommand{\authorname}[1]{\def\@authorname{#1}}
 \newcommand{\place}[1]{\def\@place{#1}}
-\newcommand{\monthyear}[1]{\def\@monthyear{#1}}
-\newcommand{\monthyeartr}[1]{\def\@monthyeartr{#1}}
+
 
 \newcommand{\supervisortitle}[1]{\def\@supervisortitle{#1}}
 \newcommand{\supervisortitletr}[1]{\def\@supervisortitletr{#1}}
@@ -228,7 +230,6 @@
 
 \def\@phdthesistype{Doctor of Philosophy Thesis}
 
-\newcommand{\approvaldate}[1]{\def\@approvaldate{#1}}
 \newcommand{\departmentheadtitle}[1]{\def\@departmentheadtitle{#1}}
 \newcommand{\departmentheadname}[1]{\def\@departmentheadname{#1}}
 \newcommand{\departmentheadposname}[1]{\def\@departmentheadposname{#1}}
@@ -244,8 +245,61 @@
 
 \newcommand{\acknowledgementtext}[1]{\def\@acknowledgementtext{#1}}
 
+\newcommand{\approvaldate}[1]{\global\def\@approvaldate{#1}}
+
+% \newcommand{\monthyear}[1]{\global\def\@monthyear{#1}}
+% \newcommand{\monthyeartr}[1]{\global\def\@monthyeartr{#1}}
+
+\newcommand{\setmonthyear}[2]{%
+  \ifcase#1\or
+    \newcommand{\monthyear}{January, #2}%
+    \newcommand{\monthyeartr}{Ocak, #2}%
+  \or
+    \newcommand{\@monthyear}{February, #2}%
+    \newcommand{\@monthyeartr}{Şubat, #2}%
+  \or
+    \newcommand{\@monthyear}{March, #2}%
+    \newcommand{\@monthyeartr}{Mart, #2}%
+  \or
+    \newcommand{\@monthyear}{April, #2}%
+    \newcommand{\@monthyeartr}{Nisan, #2}%
+  \or
+    \newcommand{\@monthyear}{May, #2}%
+    \newcommand{\@monthyeartr}{Mayıs, #2}%
+  \or
+    \newcommand{\@monthyear}{June, #2}%
+    \newcommand{\@monthyeartr}{Haziran, #2}%
+  \or
+    \newcommand{\@monthyear}{July, #2}%
+    \newcommand{\@monthyeartr}{Temmuz, #2}%
+  \or
+    \newcommand{\@monthyear}{August, #2}%
+    \newcommand{\@monthyeartr}{Ağustos, #2}%
+  \or
+    \newcommand{\@monthyear}{September, #2}%
+    \newcommand{\@monthyeartr}{Eylül, #2}%
+  \or
+    \newcommand{\@monthyear}{October, #2}%
+    \newcommand{\@monthyeartr}{Ekim, #2}%
+  \or
+    \newcommand{\@monthyear}{November, #2}%
+    \newcommand{\@monthyeartr}{Kasım, #2}%
+  \or
+    \newcommand{\@monthyear}{December, #2}%
+    \newcommand{\@monthyeartr}{Aralık, #2}%
+  \fi
+}
+
+\newcommand{\setdatesfromapproval}{%
+  \setsepchar{,||.||;||:}
+  \readlist*\mylist{\@approvaldate}
+  \setmonthyear{\mylist[2]}{\mylist[3]}%
+}
+
+
 % Title page
 \renewcommand{\maketitle}{%
+\setdatesfromapproval
     \begin{titlepage}
         \begin{center}
         \fontsize{16}{16}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
@@ -300,8 +354,6 @@
     \end{titlepage}
     \thispagestyle{empty}
 }
-
-
 
 \newcommand{\sigline}{%
   \hspace{\fill}\makebox[4cm]{\dotfill}%
