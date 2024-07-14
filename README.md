@@ -4,10 +4,9 @@ In order to run this template, you need to set your LaTeX compiler as ```LuaLate
 
 ![img.png](img.png)
 
-You need to fill in at least
-```console
-preamble.tex
-```
+You need to fill in at least ``preamble.tex`` in order to customize.
+
+Your main text will be ``main.tex``. Please examine it and use supplied examples.
 
 The other files as follows:
 
