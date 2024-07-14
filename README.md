@@ -1,4 +1,4 @@
-# Konya Food ang Agriculture University Thesis/Report Template
+# Konya Food and Agriculture University Thesis/Report Template
 This is the template for PhD and Master's Thesis given to Konya Food and Agriculture University to run under Overleaf.
 
 In order to run this template, you need to set your LaTeX compiler as ```LuaLateX``` in Overleaf.
