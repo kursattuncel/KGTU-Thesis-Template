@@ -1,3 +1,5 @@
+%Developer by Yusuf Kursat Tuncel
+
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{kgtu}[2024/06/23 KGTU Thesis Class]
 % required files:
@@ -5,6 +7,10 @@
 % abbrev.tex - List of Abbreviations. Just use ABBRV - Explanation format
 %cv.tex - CV in free format, only required for PhD Thesis
 %references.bib - References in biblatex format.
+%Optional
+%supplementary.tex
+%if don't need it, remove it or change the name.
+
 
 \LoadClass[12pt,a4paper]{report}
 %\LoadClass[12pt,a4paper,twoside]{report}
@@ -59,6 +65,49 @@
 \setlist[enumerate]{leftmargin=*}
 
 
+% First, we'll save the original \begin{document} and \end{document} behavior
+\let\originaldocument\document
+\let\endoriginaldocument\enddocument
+
+% Now we redefine the document environment
+\renewenvironment{document}{%
+    \originaldocument
+    \input{preamble}
+    %Do not modify this unless you have a good reason to do so.
+    % Title pages
+    \maketitle
+    \makeinnertitle
+    
+    % Front matter
+    \frontmatter
+    
+    \makeapproval
+    
+    \makeabstract
+    \makeabstracttr
+    \makeacknowledgement
+    \maketextofoath
+    
+    \makefrontmatter
+    
+    % Main matter
+    \mainmatter
+}{%
+    %This is the end of your text.
+    \makereferences
+    
+    %keep here as it is.
+    \makeatletter
+    \ifx\@thesistype\@phdthesistype
+        \makecv
+    \fi
+    \makeatother
+    %keep here as it is.
+    %if you have supplemantary data, uncomment the following line.
+    \iffilenotempty{supplementary.tex}{\makesupplementary}
+    % Your supplementary material goes here
+    \endoriginaldocument
+}
 %% Refences are passing beyond the page boundries because of titles.
 
 \renewbibmacro*{title}{%
