@@ -1,0 +1,13 @@
+%This is the end of your text.
+\makereferences
+
+%keep here as it is.
+\makeatletter
+\ifx\@thesistype\@phdthesistype
+    \makecv
+\fi
+\makeatother
+%keep here as it is.
+%if you have supplemantary data, uncomment the following line.
+\iffilenotempty{supplementary.tex}{\makesupplementary}
+% Your supplementary material goes here
