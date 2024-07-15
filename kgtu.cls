@@ -346,25 +346,29 @@
   \setmonthyear{\mylist[2]}{\mylist[3]}%
 }
 
-
 % Title page
 \renewcommand{\maketitle}{%
 \setdatesfromapproval
     \begin{titlepage}
         \begin{center}
-        \fontsize{16}{16}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
+        \fontsize{16}{19}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
         \vspace*{2\baselineskip}  % 2 x 1.5 line spacing before university name
-        \MakeUppercase{\@universityname}\par
-        \MakeUppercase{\@gradschoolname}\par
-        \MakeUppercase{\@departmentname}\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \begingroup
+
+        \linespread{1.0}\selectfont     % Set to single line spacing
+        \MakeUppercase{\@universityname}\par 
+        \MakeUppercase{\@gradschoolname}\par           
+        \MakeUppercase{\@departmentname}\par           
+        \endgroup
+        
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \MakeUppercase{\@thesistitle}\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \MakeUppercase{\@thesistype}\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         {\fontsize{12}{12}\selectfont\bfseries  % 12pt font size with 18pt leading (1.5 line spacing)
         \@authorname\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vfill
         {\MakeUppercase{\@place}\par}
         {\MakeUppercase{\@monthyear}\par}}
         \end{center}
@@ -380,24 +384,22 @@
         \vspace*{2\baselineskip}  % 2 x 1.5 line spacing before university name
         \MakeUppercase{\@universityname}\par
         \MakeUppercase{\@gradschoolname}\par
-        \vspace{1\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \MakeUppercase{\@thesistype}\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \MakeUppercase{\@thesistitle}\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \@authorname\par
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \@supervisorpos: \@supervisortitle\ \@supervisorname\par
-        \vspace{1\baselineskip}  % 2 x 1.5 line spacing
-                % Add co-supervisor if exists
         \ifx\@cosupervisor\undefined\else
+            \vspace{-\parskip}%
             \@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname\par
-            \vspace{0.5\baselineskip}
+            \vspace{\baselineskip}
         \fi
-        \vspace{1\baselineskip}  % 2 x 1.5 line spacing
+        \vfill
         \@departmentname\par
-        \vspace{48pt}  
-        \vspace{2\baselineskip}  % 2 x 1.5 line spacing
+        \vfill
         {\MakeUppercase{\@place}\par}
         {\MakeUppercase{\@monthyear}\par}
         \end{center}
@@ -414,7 +416,7 @@
     \setlength{\parindent}{0pt}
     \hyphenpenalty=10000
     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying\noindent
-    This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \@thesistype\ in the \MakeUppercase{\@departmentname}.\par}}
+    This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \textbf{\MakeUppercase{\@thesistype}} in the \MakeUppercase{\@departmentname}.\par}}
     \vspace{48pt}
     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying
     \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \sigline\par
@@ -737,6 +739,8 @@
     \begin{center}
         \largerfont\bfseries{\listfigurename}
     \end{center}
+    \hfill\null\\\null\hfill
+    \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
     \vspace{28pt}  % Add some space after the title
     \setstretch{1.5} 
     \@starttoc{lof}%
@@ -749,6 +753,8 @@
     \begin{center}
         \largerfont\bfseries{\listtablename}
     \end{center}
+    \hfill\null\\\null\hfill
+    \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
     \vspace{28pt}  % Add some space after the title
     \setstretch{1.5}
     \@starttoc{lot}
