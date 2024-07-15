@@ -1,4 +1,4 @@
-%Developer by Yusuf Kursat Tuncel
+%Developed by Yusuf Kursat Tuncel. Please credit me in your acknowledgement page if you write your thesis with this template.
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{kgtu}[2024/06/23 KGTU Thesis Class]
@@ -419,19 +419,19 @@
     This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \textbf{\MakeUppercase{\@thesistype}} in the \MakeUppercase{\@departmentname}.\par}}
     \vspace{48pt}
     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying
-    \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \sigline\par
-    \noindent\@supervisoraffiliation\par 
+    \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \par
+    \noindent\@supervisoraffiliation\sigline\par 
     \vspace{18pt}
 
     \ifx\@cosupervisor\undefined\else
-        \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \sigline\par
-        \noindent\@cosupervisoraffiliation\par 
+        \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \par
+        \noindent\@cosupervisoraffiliation\sigline\par 
         \vspace{18pt}%
     \fi
     
     \DTLforeach*{jury}{\title=title, \name=name, \role=role, \affiliation=affiliation}{%
-        \noindent\role: {\title} \name \sigline\par
-        \noindent\affiliation\par 
+        \noindent\role: {\title} \name \par
+        \noindent\affiliation\sigline\par 
         \vspace{18pt}
             }
         }
@@ -551,7 +551,7 @@
     \vspace{28pt}
     \vbox{\parbox[t]{\linewidth}{
     \singlespacing
-    The study I presented as my {\@thesistype} titled {\bfseries``\@thesistitle''} has been written without  applying  to  any  assistance  inconsistent  with  the  scientific  ethics  and traditions, and all sources I have benefited from were listed in bibliography and I have used them by means of making references and I declare and confirm this with my honor.}}
+    The study I presented as my {\@thesistype} titled {\bfseries``\@thesistitle''} has been written without resorting to any  assistance  inconsistent  with  the scientific  ethics  and traditions, and all sources I have benefited from are listed in bibliography and I have used them by means of making references and I declare and confirm this on my honor.}}
     \vspace{28pt}
     \vbox{\parbox[t]{\linewidth}{\singlespacing
      \raggedleft
@@ -698,9 +698,9 @@
 \cftsetindents{subsection}{2.5em}{2em}
 
 % Format List of Figures entries
-\renewcommand{\cftfigpresnum}{Figure }
+\renewcommand{\cftfigpresnum}{\bfseries Figure }
 \renewcommand{\cftfigaftersnum}{.}
-\renewcommand{\cftfigaftersnumb}{\hspace{1em}}
+\renewcommand{\cftfigaftersnumb}{\normalfont\hspace{1em}}
 \renewcommand{\cftfigfont}{\normalfont}
 \renewcommand{\cftfigpagefont}{\normalfont}
 \renewcommand{\cftfigleader}{\cftdotfill{\cftfigdotsep}}
@@ -717,9 +717,9 @@
 
 
 % Format List of Tables entries
-\renewcommand{\cfttabpresnum}{Table }
+\renewcommand{\cfttabpresnum}{\bfseries Table }
 \renewcommand{\cfttabaftersnum}{.}
-\renewcommand{\cfttabaftersnumb}{\hspace{1em}}
+\renewcommand{\cfttabaftersnumb}{\normalfont\hspace{1em}}
 \renewcommand{\cfttabfont}{\normalfont}
 \renewcommand{\cfttabpagefont}{\normalfont}
 \renewcommand{\cfttableader}{\cftdotfill{\cfttabdotsep}}
@@ -740,7 +740,9 @@
         \largerfont\bfseries{\listfigurename}
     \end{center}
     \hfill\null\\\null\hfill
+    \makebox[0.86\textwidth][l]{\textbf{Figure}}\hfill
     \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
+    % \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
     \vspace{28pt}  % Add some space after the title
     \setstretch{1.5} 
     \@starttoc{lof}%
@@ -754,6 +756,7 @@
         \largerfont\bfseries{\listtablename}
     \end{center}
     \hfill\null\\\null\hfill
+    \makebox[0.86\textwidth][l]{\textbf{Table}}\hfill
     \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
     \vspace{28pt}  % Add some space after the title
     \setstretch{1.5}
