@@ -270,6 +270,7 @@
 \newcommand{\supervisoraffiliation}[1]{\def\@supervisoraffiliation{#1}}
 
 \newcommand{\cosupervisor}[1]{\def\@cosupervisor{#1}}
+\newcommand{\cosupervisorinjury}[1]{\def\@cosupervisorinjury{#1}}
 \newcommand{\cosupervisortitle}[1]{\def\@cosupervisortitle{#1}}
 \newcommand{\cosupervisortitletr}[1]{\def\@cosupervisortitletr{#1}}
 \newcommand{\cosupervisorpos}[1]{\def\@cosupervisorpos{#1}}
@@ -419,8 +420,15 @@
     \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \sigline\par
     \noindent\@supervisoraffiliation\par 
     \vspace{18pt}
+
+    \ifx\@cosupervisor\undefined\else
+        \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \sigline\par
+        \noindent\@cosupervisoraffiliation\par 
+        \vspace{18pt}%
+    \fi
+    
     \DTLforeach*{jury}{\title=title, \name=name, \role=role, \affiliation=affiliation}{%
-        \noindent\role: \title \name \sigline\par
+        \noindent\role: {\title} \name \sigline\par
         \noindent\affiliation\par 
         \vspace{18pt}
             }
