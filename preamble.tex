@@ -1,9 +1,12 @@
 \universityname{Konya Food and Agriculture University}
 \gradschoolname{Institute of Graduate Studies}
 
+\universitynametr{Konya Gıda ve Tarım Üniversitesi}
+\gradschoolnametr{Lisansüstü Eğitim Enstitüsü}
+
 %start customizing from here
 \departmentname{Department of Computer Engineering}
-\departmentnametr{Bilgisayar Mühendisliği Bölümü}
+\departmentnametr{Bilgisayar Mühendisliği Ana Bilim Dalı}
 
 \thesistitle{Sample Thesis Title Generally It Will Be More Than One Line Possibly Two or Three Lines Even Four Lines But We Have Limited Space Here So This Is It}
 \thesistitletr{Örnek Tez Başlığı Buraya Gelecek Genellikle Bu Başlık En Az İki Üç Satır Olur Hatta Dört Satır Bile Olması Mümkündür O Yüzden Size Bunu Gösteriyoruz}
@@ -18,12 +21,14 @@
 
 \thesistype{Master Thesis}
 \thesistypetr{Yüksek Lisans Tezi}
+
 \thesisdegree{Master of Science}
+\thesisdegreetr{Yüksek Lisans Tezi}
 
 %This is name of the Author
 \authorname{Can GÜNDÜR}
 \place{Konya}
-\approvaldate{24.07.2024} %date of approval, Jury date.
+\approvaldate{24.08.2024} %date of approval, Jury date.
 
 %Heads UP! All of the names are made-up.Lastnames are written in capital, Turkish official writing style.
 
@@ -36,8 +41,9 @@
 %Dr. -> Dr. %öğretim üyesi olmayan ama doktora dereceli kişiler için.
 \supervisortitletr{Doç. Dr.}
 \supervisorpos{Supervisor}
-\supervisorpostr{Tez Danışmanı}
+\supervisorpostr{Danışman}
 \supervisoraffiliation{Konya Food And Agriculture University}
+\supervisoraffiliationtr{Konya Gıda ve Tarım Üniversitesi}
 
 % Comment the following lines, if you don't have co-supervisor
 % If you have co-supervisor, but not in jury, then comment %cosupervisorinjury line only. Otherwise, keep everything in place.
@@ -51,16 +57,21 @@
 \cosupervisorpos{Co-Supervisor}
 \cosupervisorpostr{Eş Danışman}
 \cosupervisoraffiliation{Konya Food And Agriculture University}
+\cosupervisoraffiliationtr{Konya Gıda ve Tarım Üniversitesi}
 
 % Department Head
-\departmentheadtitle{Assoc. Prof. Dr.}
 \departmentheadname{Özgür AKYALDIZ}
+\departmentheadtitle{Assoc. Prof. Dr.}
+\departmentheadtitletr{Doç. Dr.}
 \departmentheadposname{Head Of Department}
+\departmentheadposnametr{Anabilim Dalı Başkanı}
 
 % Director of the Institute
-\directortitle{Assist. Prof. Dr.}
 \directorname{Ekin BULABAN}
+\directortitle{Assist. Prof. Dr.}
+\directortitletr{Dr. Öğretim Üyesi}
 \directorposname{Director}
+\directorposnametr{Müdür}
 
 % Define jury members
 %Your supervior will always be the first jury members. In PhD, Co-supervisors can not be jury members. In M.S., it's upto the institute decision.
@@ -69,26 +80,40 @@
 
 \DTLnewdb{jury}
 \DTLnewrow{jury}
-\DTLnewdbentry{jury}{title}{Prof. Dr. }
+\DTLnewdbentry{jury}{title}{Prof. Dr.}
+\DTLnewdbentry{jury}{titletr}{Prof. Dr.}
 \DTLnewdbentry{jury}{name}{Selim GÜNGÖREN}
 \DTLnewdbentry{jury}{role}{Jury Head}
+\DTLnewdbentry{jury}{roletr}{Başkan}
 \DTLnewdbentry{jury}{affiliation}{Konya Food and Agriculture University}
+\DTLnewdbentry{jury}{affiliationtr}{Konya Gıda ve Tarım Üniversitesi}
+
 \DTLnewrow{jury}
-\DTLnewdbentry{jury}{title}{Assist. Prof. Dr.}
+\DTLnewdbentry{jury}{title}{Assoc. Prof. Dr.}
+\DTLnewdbentry{jury}{titletr}{Doç. Dr.}
 \DTLnewdbentry{jury}{name}{Umut HARMANDÖVEN}
 \DTLnewdbentry{jury}{role}{Jury Member}
+\DTLnewdbentry{jury}{roletr}{Üye}
 \DTLnewdbentry{jury}{affiliation}{Some Other University}
+\DTLnewdbentry{jury}{affiliationtr}{Başka Bir Üniversite}
+
 \DTLnewrow{jury}
 \DTLnewdbentry{jury}{title}{Assist. Prof. Dr.}
+\DTLnewdbentry{jury}{titletr}{Dr. Öğretim Üyesi}
 \DTLnewdbentry{jury}{name}{Kuzey ŞENBUCAK}
 \DTLnewdbentry{jury}{role}{Jury Member}
+\DTLnewdbentry{jury}{roletr}{Üye}
 \DTLnewdbentry{jury}{affiliation}{Konya Food and Agriculture University}
+\DTLnewdbentry{jury}{affiliationtr}{Konya Gıda ve Tarım Üniversitesi}
+
 \DTLnewrow{jury}
 \DTLnewdbentry{jury}{title}{Assist. Prof. Dr.}
+\DTLnewdbentry{jury}{titletr}{Dr. Öğretim Üyesi}
 \DTLnewdbentry{jury}{name}{Ece SOSYAL}
 \DTLnewdbentry{jury}{role}{Jury Member}
+\DTLnewdbentry{jury}{roletr}{Üye}
 \DTLnewdbentry{jury}{affiliation}{Some Other University}
-
+\DTLnewdbentry{jury}{affiliationtr}{Başka Bir Üniversite}
 
 \abstracttext{Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisi eget ultricies tincidunt, nunc elit tincidunt nunc, nec tincidunt nunc nisi eget nunc. Sed euismod, nisi eget ultricies tincidunt, nunc elit tincidunt nunc, nec tincidunt nunc nisi eget nunc. Sed euismod, nisi eget ultricies tincidunt, nunc elit tincidunt nunc, nec tincidunt nunc nisi eget nunc.
 }
@@ -99,4 +124,7 @@
 
 \acknowledgementtext{\noindent
 Here, you usually thank to your supervisor and the members of your thesis jury, your wife/child, mother/father, who ever you like.
+}
+\acknowledgementtexttr{\noindent
+Türkçe teşekkür metni.
 }

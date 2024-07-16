@@ -1,0 +1,57 @@
+\documentclass[turkish]{article}
+\usepackage[shorthands=:!]{babel}
+\usepackage[
+  backend=biber,
+  style=ext-authoryear,
+  maxbibnames=999,
+  mincitenames=1, maxcitenames=2,
+  giveninits=true,
+  articlein=false,
+]{biblatex}
+
+\renewcommand*{\newunitpunct}{\addcomma\space}
+
+\DeclareNameAlias{sortname}{family-given}
+
+\DeclareDelimAlias[bib]{finalnamedelim}{multinamedelim}
+
+\DeclareDelimFormat[bib]{nameyeardelim}{\newunitpunct}
+
+\DeclareFieldFormat{biblabeldate}{#1}
+
+\DeclareFieldFormat
+  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+  {titlecase:title}{\MakeSentenceCase*{#1}}
+
+\renewcommand*{\jourvoldelim}{\addcomma\space}
+\renewcommand*{\volnumdelim}{\addcomma\space}
+\DeclareFieldFormat[article,periodical]{volume}{\bibcplstring{jourvol}~#1}
+\DeclareFieldFormat[article,periodical]{number}{\bibcplstring{issue}~#1}
+
+\begin{filecontents}{\jobname.bib}
+@article{example,
+  author  = {Chen, Jung Chieh and Wen, Chao Kai and Ting, Pangan},
+  journal = {IEEE Communications Letters},
+  title   = {An Efficient Pilot Design Scheme
+             for Sparse Channel Estimation in {OFDM} Systems},
+  year    = {2013},
+  volume  = {17},
+  number  = {7},
+  pages   = {1352-1355},
+  langid  = {english},
+}
+\end{filecontents}
+\addbibresource{\jobname.bib}
+\addbibresource{biblatex-examples.bib}
+
+\begin{document}
+  Lorem \autocite{example}
+
+  dolor \autocite{sigfridsson}
+
+  ipsum \parencite{example}
+
+  sit \cite{example}
+
+  \printbibliography
+\end{document}

@@ -11,20 +11,110 @@
 %supplementary.tex
 %if don't need it, remove it or change the name.
 
+\RequirePackage{etoolbox}
+\RequirePackage{graphicx}
 
+\def\@thesislang{en} % Default to English
+
+\newcommand{\thesislang}[1]{%
+  \def\@thesislang{#1}%
+  \ifdefstring{\@thesislang}{tr}{%
+    \AtBeginDocument{\selectlanguage{turkish}}%
+  }{%
+    \AtBeginDocument{\selectlanguage{english}}%
+  }%
+}
+
+% Define a boolean for Turkish language
+\newbool{@turkishthesis}
+\boolfalse{@turkishthesis}
+
+\newbool{@apastyle}
+\boolfalse{@apastyle}
+
+\newbool{@ieeestyle}
+\booltrue{@ieeestyle}
+
+
+% Define the Turkish option
+\DeclareOption{turkish}{\booltrue{@turkishthesis}}
+\DeclareOption{bibstyle=ieee}{%
+  \booltrue{@ieeestyle}%
+  \boolfalse{@apastyle}%
+}
+\DeclareOption{bibstyle=apa}{%
+  \booltrue{@apastyle}%
+  \boolfalse{@ieeestyle}%
+}
+
+% Process options
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{report}}
+\ProcessOptions\relax
+
+% Load the base class
 \LoadClass[12pt,a4paper]{report}
-%\LoadClass[12pt,a4paper,twoside]{report}
 
-% Required packages
-\RequirePackage[backend=biber,style=ieee,sorting=none]{biblatex}
-% \RequirePackage[backend=biber,style=ieee,sorting=none,uniquelist=false,uniquename=false,backref=true,isbn=false,url=false,doi=false,eprint=false,hyperref=true,block=ragged,dashed=false]{biblatex}
+% First, load babel based on the thesis language
+\ifbool{@turkishthesis}{%
+  \RequirePackage[turkish]{babel}%
+  \def\@thesislang{tr}%
+  % Define commands to turn shorthand on and off
+  \newcommand{\turnshorthandoff}{\shorthandoff{=}}
+  \newcommand{\turnshorthandon}{\shorthandon{=}}
+  
+  \let\oldincludegraphics\includegraphics
+  \renewcommand{\includegraphics}[2][]{%
+    \turnshorthandoff
+    \oldincludegraphics[#1]{#2}%
+    \turnshorthandon
+  }
+}{%
+  \RequirePackage[english]{babel}% or whatever your default language is
+}
+
+% Now, load the appropriate bibliography style
+\ifbool{@apastyle}{%
+  \RequirePackage[
+    backend=biber,
+    style=ext-authoryear,
+    maxbibnames=999,
+    mincitenames=1, maxcitenames=2,
+    giveninits=true,
+    articlein=false,
+  ]{biblatex}
+  
+  \renewcommand*{\newunitpunct}{\addcomma\space}
+  
+  \DeclareNameAlias{sortname}{family-given}
+  
+  \DeclareDelimAlias[bib]{finalnamedelim}{multinamedelim}
+  
+  \DeclareDelimFormat[bib]{nameyeardelim}{\newunitpunct}
+  
+  \DeclareFieldFormat{biblabeldate}{#1}
+  
+  \DeclareFieldFormat
+    [article,inbook,incollection,inproceedings,patent,thesis,unpublished]
+    {titlecase:title}{\MakeSentenceCase*{#1}}
+  
+  \renewcommand*{\jourvoldelim}{\addcomma\space}
+  \renewcommand*{\volnumdelim}{\addcomma\space}
+  \DeclareFieldFormat[article,periodical]{volume}{\bibcplstring{jourvol}~#1}
+  \DeclareFieldFormat[article,periodical]{number}{\bibcplstring{issue}~#1}
+}{%
+  \ifbool{@ieeestyle}{%
+    \RequirePackage[backend=biber,style=ieee,sorting=none]{biblatex}
+  }{%
+    % If neither APA nor IEEE style is selected, load a default style
+    \RequirePackage[backend=biber]{biblatex}
+  }
+}
 
 \RequirePackage[left=4cm,right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
 \RequirePackage{titling}
 \RequirePackage{emptypage}
 \RequirePackage{titlesec}
 \RequirePackage{fancyhdr}
-\RequirePackage{etoolbox}
 \RequirePackage{xstring}
 \RequirePackage{setspace}
 \RequirePackage{microtype}
@@ -39,7 +129,6 @@
 \RequirePackage{tabularx}
 \RequirePackage{array}
 \RequirePackage{xstring}
-\RequirePackage{graphicx}
 \RequirePackage{array}
 \RequirePackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
 \RequirePackage{booktabs}
@@ -51,19 +140,13 @@
 \RequirePackage{listofitems}
 
 
-% \RequirePackage{lmodern}
-% \RequirePackage{newtxtext}
-% \RequirePackage{newtxmath}
-
-% \newcommand{\approvaldate}[1]{\def\@approvaldate{#1}}
-% \newcommand{\monthyear}[1]{\def\@monthyear{#1}}
-% \newcommand{\monthyeartr}[1]{\def\@monthyeartr{#1}}
 
 \setmainfont{Times New Roman}
 
 \setlist[itemize]{leftmargin=*}
 \setlist[enumerate]{leftmargin=*}
 
+\def\@trthesis{tr}
 
 % First, we'll save the original \begin{document} and \end{document} behavior
 \let\originaldocument\document
@@ -72,24 +155,31 @@
 % Now we redefine the document environment
 \renewenvironment{document}{%
     \originaldocument
+
     \input{preamble}
     %Do not modify this unless you have a good reason to do so.
     % Title pages
+
     \maketitle
     \makeinnertitle
-    
+
     % Front matter
     \frontmatter
     
     \makeapproval
     
-    \makeabstract
-    \makeabstracttr
-    \makeacknowledgement
-    \maketextofoath
-    
-    \makefrontmatter
-    
+    \ifx\@thesislang\@trthesis
+        \makeabstracttr    
+        \makeabstract
+    \else
+        \makeabstract
+        \makeabstracttr
+        
+        \makeacknowledgement
+        \maketextofoath
+            
+        \makefrontmatter    
+    \fi
     % Main matter
     \mainmatter
 }{%
@@ -164,10 +254,10 @@
 
 \let\oldref\ref
 \renewcommand{\ref}[1]{%
-  \IfBeginWith{#1}{fig:}{{Figure~\oldref{#1}}}{%
-    \IfBeginWith{#1}{tab:}{{Table~\oldref{#1}}}{%
-     \IfBeginWith{#1}{eqn:}{{Equation~\oldref{#1}}}{%
-      \IfBeginWith{#1}{alg:}{{Algorithm~\oldref{#1}}}{%
+  \IfBeginWith{#1}{fig:}{{\@figurelabel~\oldref{#1}}}{%
+    \IfBeginWith{#1}{tab:}{{\@tablelabel~\oldref{#1}}}{%
+     \IfBeginWith{#1}{eqn:}{{\@eqnlabel~\oldref{#1}}}{%
+      \IfBeginWith{#1}{alg:}{{\@alglabel~\oldref{#1}}}{%
                 \oldref{#1}%
        }
       }
@@ -246,7 +336,11 @@
 
 % Define variables
 \newcommand{\universityname}[1]{\def\@universityname{#1}}
+\newcommand{\universitynametr}[1]{\def\@universitynametr{#1}}
+
 \newcommand{\gradschoolname}[1]{\def\@gradschoolname{#1}}
+\newcommand{\gradschoolnametr}[1]{\def\@gradschoolnametr{#1}}
+
 \newcommand{\departmentname}[1]{\def\@departmentname{#1}}
 \newcommand{\departmentnametr}[1]{\def\@departmentnametr{#1}}
 
@@ -256,8 +350,10 @@
 \newcommand{\thesistype}[1]{\def\@thesistype{#1}}
 \newcommand{\thesistypetr}[1]{\def\@thesistypetr{#1}}
 
-\newcommand{\thesistypeshort}[1]{\def\@thesistypeshort{#1}}
 \newcommand{\thesisdegree}[1]{\def\@thesisdegree{#1}}
+\newcommand{\thesisdegreetr}[1]{\def\@thesisdegreetr{#1}}
+% \newcommand{\thesislang}[1]{\def\@thesislang{#1}}
+
 \newcommand{\authorname}[1]{\def\@authorname{#1}}
 \newcommand{\place}[1]{\def\@place{#1}}
 
@@ -268,6 +364,7 @@
 \newcommand{\supervisorpostr}[1]{\def\@supervisorpostr{#1}}
 \newcommand{\supervisorname}[1]{\def\@supervisorname{#1}}
 \newcommand{\supervisoraffiliation}[1]{\def\@supervisoraffiliation{#1}}
+\newcommand{\supervisoraffiliationtr}[1]{\def\@supervisoraffiliationtr{#1}}
 
 \newcommand{\cosupervisor}[1]{\def\@cosupervisor{#1}}
 \newcommand{\cosupervisorinjury}[1]{\def\@cosupervisorinjury{#1}}
@@ -277,15 +374,22 @@
 \newcommand{\cosupervisorpostr}[1]{\def\@cosupervisorpostr{#1}}
 \newcommand{\cosupervisorname}[1]{\def\@cosupervisorname{#1}}
 \newcommand{\cosupervisoraffiliation}[1]{\def\@cosupervisoraffiliation{#1}}
+\newcommand{\cosupervisoraffiliationtr}[1]{\def\@cosupervisoraffiliationtr{#1}}
 
 \def\@phdthesistype{Doctor of Philosophy Thesis}
 
 \newcommand{\departmentheadtitle}[1]{\def\@departmentheadtitle{#1}}
+\newcommand{\departmentheadtitletr}[1]{\def\@departmentheadtitletr{#1}}
 \newcommand{\departmentheadname}[1]{\def\@departmentheadname{#1}}
 \newcommand{\departmentheadposname}[1]{\def\@departmentheadposname{#1}}
+\newcommand{\departmentheadposnametr}[1]{\def\@departmentheadposnametr{#1}}
+
 \newcommand{\directortitle}[1]{\def\@directortitle{#1}}
+\newcommand{\directortitletr}[1]{\def\@directortitletr{#1}}
 \newcommand{\directorname}[1]{\def\@directorname{#1}}
 \newcommand{\directorposname}[1]{\def\@directorposname{#1}}
+\newcommand{\directorposnametr}[1]{\def\@directorposnametr{#1}}
+
 \newcommand{\numberofpages}[1]{\def\@numberofpages{#1}}
 \newcommand{\abstracttext}[1]{\def\@abstracttext{#1}}
 \newcommand{\abstracttexttr}[1]{\def\@abstracttexttr{#1}}
@@ -294,6 +398,7 @@
 \newcommand{\keywordstr}[1]{\def\@keywordstr{#1}}
 
 \newcommand{\acknowledgementtext}[1]{\def\@acknowledgementtext{#1}}
+\newcommand{\acknowledgementtexttr}[1]{\def\@acknowledgementtexttr{#1}}
 
 \newcommand{\approvaldate}[1]{\global\def\@approvaldate{#1}}
 
@@ -347,8 +452,37 @@
 }
 
 % Title page
-\renewcommand{\maketitle}{%
-\setdatesfromapproval
+% \renewcommand{\maketitleold}{%
+%     \setdatesfromapproval
+%     \begin{titlepage}
+%         \begin{center}
+%         \fontsize{16}{19}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
+%         \vspace*{2\baselineskip}  % 2 x 1.5 line spacing before university name
+%         \begingroup
+
+%         \linespread{1.0}\selectfont     % Set to single line spacing
+%         \MakeUppercase{\@universityname}\par 
+%         \MakeUppercase{\@gradschoolname}\par           
+%         \MakeUppercase{\@departmentname}\par           
+%         \endgroup
+        
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \MakeUppercase{\@thesistitle}\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \MakeUppercase{\@thesistype}\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         {\fontsize{12}{12}\selectfont\bfseries  % 12pt font size with 18pt leading (1.5 line spacing)
+%         \@authorname\par
+%         \vfill
+%         {\MakeUppercase{\@place}\par}
+%         {\MakeUppercase{\@monthyear}\par}}
+%         \end{center}
+%     \end{titlepage}
+%     \newpage\null\thispagestyle{empty}\newpage
+% }
+
+\newcommand{\maketitletr}{%
+    \setdatesfromapproval
     \begin{titlepage}
         \begin{center}
         \fontsize{16}{19}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
@@ -356,45 +490,179 @@
         \begingroup
 
         \linespread{1.0}\selectfont     % Set to single line spacing
-        \MakeUppercase{\@universityname}\par 
-        \MakeUppercase{\@gradschoolname}\par           
-        \MakeUppercase{\@departmentname}\par           
+        \MakeUppercase{\@universitynametr}\par 
+        \MakeUppercase{\@gradschoolnametr}\par           
+        \MakeUppercase{\@departmentnametr}\par           
         \endgroup
         
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
-        \MakeUppercase{\@thesistitle}\par
+        \MakeUppercase{\@thesistitletr}\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
-        \MakeUppercase{\@thesistype}\par
+        \MakeUppercase{\@thesistypetr}\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         {\fontsize{12}{12}\selectfont\bfseries  % 12pt font size with 18pt leading (1.5 line spacing)
         \@authorname\par
         \vfill
         {\MakeUppercase{\@place}\par}
-        {\MakeUppercase{\@monthyear}\par}}
+        {\MakeUppercase{\@monthyeartr}\par}}
         \end{center}
     \end{titlepage}
     \newpage\null\thispagestyle{empty}\newpage
 }
 
+\renewcommand{\maketitle}{%
+    \setdatesfromapproval
+    \begin{titlepage}
+        \begin{center}
+        \fontsize{16}{19}\selectfont\bfseries
+        \vspace*{2\baselineskip}
+        \begingroup
+        \linespread{1.0}\selectfont
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@universitynametr}\par 
+            \MakeUppercase{\@gradschoolnametr}\par           
+            \MakeUppercase{\@departmentnametr}\par
+        \else
+            \MakeUppercase{\@universityname}\par 
+            \MakeUppercase{\@gradschoolname}\par           
+            \MakeUppercase{\@departmentname}\par
+        \fi
+        \endgroup
+        
+        \vspace{3\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@thesistitletr}\par
+        \else
+            \MakeUppercase{\@thesistitle}\par
+        \fi
+        \vspace{3\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@thesistypetr}\par
+        \else
+            \MakeUppercase{\@thesistype}\par
+        \fi
+        \vspace{3\baselineskip}
+        {\fontsize{12}{12}\selectfont\bfseries
+        \@authorname\par
+        \vfill
+        {\MakeUppercase{\@place}\par}
+        \ifx\@thesislang\@trthesis
+            {\MakeUppercase{\@monthyeartr}\par}
+        \else
+            {\MakeUppercase{\@monthyear}\par}
+        \fi}
+        \end{center}
+    \end{titlepage}
+    \newpage\null\thispagestyle{empty}\newpage
+}
 % Inner title page
 \newcommand{\makeinnertitle}{%
     \begin{titlepage}
         \begin{center}
+        \fontsize{12}{12}\selectfont\bfseries
+        \vspace*{2\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@universitynametr}\par
+            \MakeUppercase{\@gradschoolnametr}\par
+        \else
+            \MakeUppercase{\@universityname}\par
+            \MakeUppercase{\@gradschoolname}\par
+        \fi
+        \vspace{3\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@thesistypetr}\par
+        \else
+            \MakeUppercase{\@thesistype}\par
+        \fi
+        \vspace{3\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \MakeUppercase{\@thesistitletr}\par
+        \else
+            \MakeUppercase{\@thesistitle}\par
+        \fi
+        \vspace{3\baselineskip}
+        \@authorname\par
+        \vspace{3\baselineskip}
+        \ifx\@thesislang\@trthesis
+            \@supervisorpostr: \@supervisortitletr\ \@supervisorname\par
+        \else
+            \@supervisorpos: \@supervisortitle\ \@supervisorname\par
+        \fi
+        \ifx\@cosupervisor\undefined\else
+            \vspace{-\parskip}%
+            \ifx\@thesislang\@trthesis
+                \@cosupervisorpostr: \@cosupervisortitletr\ \@cosupervisorname\par
+            \else
+                \@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname\par
+            \fi
+            \vspace{\baselineskip}
+        \fi
+        \vfill
+        \ifx\@thesislang\@trthesis
+            \@departmentnametr\par
+        \else
+            \@departmentname\par
+        \fi
+        \vfill
+        {\MakeUppercase{\@place}\par}
+        \ifx\@thesislang\@trthesis
+            {\MakeUppercase{\@monthyeartr}\par}
+        \else
+            {\MakeUppercase{\@monthyear}\par}
+        \fi
+        \end{center}
+    \end{titlepage}
+    \thispagestyle{empty}
+}
+
+% \newcommand{\makeinnertitle}{%
+%     \begin{titlepage}
+%         \begin{center}
+%         \fontsize{12}{12}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
+%         \vspace*{2\baselineskip}  % 2 x 1.5 line spacing before university name
+%         \MakeUppercase{\@universityname}\par
+%         \MakeUppercase{\@gradschoolname}\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \MakeUppercase{\@thesistype}\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \MakeUppercase{\@thesistitle}\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \@authorname\par
+%         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
+%         \@supervisorpos: \@supervisortitle\ \@supervisorname\par
+%         \ifx\@cosupervisor\undefined\else
+%             \vspace{-\parskip}%
+%             \@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname\par
+%             \vspace{\baselineskip}
+%         \fi
+%         \vfill
+%         \@departmentname\par
+%         \vfill
+%         {\MakeUppercase{\@place}\par}
+%         {\MakeUppercase{\@monthyear}\par}
+%         \end{center}
+%     \end{titlepage}
+%     \thispagestyle{empty}
+% }
+
+\newcommand{\makeinnertitletr}{%
+    \begin{titlepage}
+        \begin{center}
         \fontsize{12}{12}\selectfont\bfseries  % 16pt font size with 24pt leading (1.5 line spacing)
         \vspace*{2\baselineskip}  % 2 x 1.5 line spacing before university name
-        \MakeUppercase{\@universityname}\par
-        \MakeUppercase{\@gradschoolname}\par
+        \MakeUppercase{\@universitynametr}\par
+        \MakeUppercase{\@gradschoolnametr}\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
-        \MakeUppercase{\@thesistype}\par
+        \MakeUppercase{\@thesistypetr}\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
-        \MakeUppercase{\@thesistitle}\par
+        \MakeUppercase{\@thesistitletr}\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
         \@authorname\par
         \vspace{3\baselineskip}  % 2 x 1.5 line spacing
-        \@supervisorpos: \@supervisortitle\ \@supervisorname\par
+        \@supervisorpostr: \@supervisortitletr\ \@supervisorname\par
         \ifx\@cosupervisor\undefined\else
             \vspace{-\parskip}%
-            \@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname\par
+            \@cosupervisorpostr: \@cosupervisortitletr\ \@cosupervisornametr\par
             \vspace{\baselineskip}
         \fi
         \vfill
@@ -407,57 +675,195 @@
     \thispagestyle{empty}
 }
 
+
+
 \newcommand{\sigline}{%
   \hspace{\fill}\makebox[4cm]{\dotfill}%
 }
+
 \newcommand{\makeapproval}{%
     \thispagestyle{empty}
     \normalfont\mdseries 
     \setlength{\parindent}{0pt}
     \hyphenpenalty=10000
     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying\noindent
-    This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \textbf{\MakeUppercase{\@thesistype}} in the \MakeUppercase{\@departmentname}.\par}}
+    \ifx\@thesislang\@trthesis
+        \@authorname\ tarafından hazırlanan \textbf{``\@thesistitletr''} adlı bu çalışma, \@approvaldate\ tarihinde aşağıdaki jüri tarafından oy birliği  ile  \MakeUppercase{\@departmentnametr}'nda  \textbf{\MakeUppercase{\@thesistypetr}} olarak kabul edilmiştir.\par
+    \else
+        This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \textbf{\MakeUppercase{\@thesistype}} in the \MakeUppercase{\@departmentname}.\par
+    \fi}}
     \vspace{48pt}
     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying
-    \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \par
-    \noindent\@supervisoraffiliation\sigline\par 
+    \ifx\@thesislang\@trthesis
+        \noindent\@supervisorpostr: \@supervisortitletr\ \@supervisorname \par
+        \noindent\@supervisoraffiliationtr\sigline\par 
+    \else
+        \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \par
+        \noindent\@supervisoraffiliation\sigline\par 
+    \fi
     \vspace{18pt}
-
     \ifx\@cosupervisor\undefined\else
-        \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \par
-        \noindent\@cosupervisoraffiliation\sigline\par 
+        \ifx\@thesislang\@trthesis
+            \noindent\@cosupervisorpostr: \@cosupervisortitletr\ \@cosupervisorname \par
+            \noindent\@cosupervisoraffiliationtr\sigline\par 
+        \else
+            \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \par
+            \noindent\@cosupervisoraffiliation\sigline\par 
+        \fi
         \vspace{18pt}%
     \fi
     
-    \DTLforeach*{jury}{\title=title, \name=name, \role=role, \affiliation=affiliation}{%
-        \noindent\role: {\title} \name \par
-        \noindent\affiliation\sigline\par 
-        \vspace{18pt}
-            }
+    \ifx\@thesislang\@trthesis
+        \DTLforeach*{jury}{\title=titletr, \name=name, \role=roletr, \affiliation=affiliationtr}{%
+            \noindent\role: {\title} \name\par
+            \noindent\affiliation\sigline\par 
+            \vspace{18pt}
         }
-    }
+    \else
+        \DTLforeach*{jury}{\title=title, \name=name, \role=role, \affiliation=affiliation}{%
+            \noindent\role: {\title} \name \par
+            \noindent\affiliation\sigline\par 
+            \vspace{18pt}
+        }
+    \fi
+    }}
     \vspace{18pt}
     \vbox{\parbox[t]{\linewidth}{\noindent\singlespacing\justifying
     \setlength{\parindent}{0pt}
     \hyphenpenalty=10000
-    I certify that this thesis which has been accepted by the jury satisfies all the requirements as a thesis for the degree of \@thesisdegree.\par}}
+    \ifx\@thesislang\@trthesis
+        Jüri tarafından kabul edilen bu tezin {\@thesisdegreetr} olması için gerekli şartları yerine getirdiğini onaylıyorum.\par
+    \else
+        I certify that this thesis which has been accepted by the jury satisfies all the requirements as a thesis for the degree of \@thesisdegree.\par
+    \fi}}
     \vspace{18pt}
     \vbox{\singlespacing
         \raggedleft
-        \@departmentheadtitle\ \@departmentheadname\par\noindent
-        \@departmentheadposname\par
+        \ifx\@thesislang\@trthesis
+            \@departmentheadtitletr\ \@departmentheadname\par\noindent
+            \@departmentheadposnametr\par
+        \else
+            \@departmentheadtitle\ \@departmentheadname\par\noindent
+            \@departmentheadposname\par
+        \fi
     }
     \vspace{18pt}
     \raggedright
     \vbox{\singlespacing
-        Approval of The Graduate School\par
+        \ifx\@thesislang\@trthesis
+            Lisansüstü Eğitim Enstitüsü Onayı\par
+        \else
+            Approval of The Graduate School\par
+        \fi
         \vspace{0.5cm}
         \raggedleft
-        \@directortitle\ \@directorname\par\noindent
-        \@directorposname\par
+        \ifx\@thesislang\@trthesis
+            \@directortitletr\ \@directorname\par\noindent
+            \@directorposnametr\par
+        \else
+            \@directortitle\ \@directorname\par\noindent
+            \@directorposname\par
+        \fi
     }
     \newpage
 }
+% \newcommand{\makeapproval}{%
+%     \thispagestyle{empty}
+%     \normalfont\mdseries 
+%     \setlength{\parindent}{0pt}
+%     \hyphenpenalty=10000
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying\noindent
+%     This study titled \textbf{``\@thesistitle''}, prepared by \@authorname\ has been accepted with consensus by the following jury on \@approvaldate\ as a \textbf{\MakeUppercase{\@thesistype}} in the \MakeUppercase{\@departmentname}.\par}}
+%     \vspace{48pt}
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying
+%     \noindent\@supervisorpos: \@supervisortitle\ \@supervisorname \par
+%     \noindent\@supervisoraffiliation\sigline\par 
+%     \vspace{18pt}
+
+%     \ifx\@cosupervisor\undefined\else
+%         \noindent\@cosupervisorpos: \@cosupervisortitle\ \@cosupervisorname \par
+%         \noindent\@cosupervisoraffiliation\sigline\par 
+%         \vspace{18pt}%
+%     \fi
+    
+%     \DTLforeach*{jury}{\title=title, \name=name, \role=role, \affiliation=affiliation}{%
+%         \noindent\role: {\title} \name \par
+%         \noindent\affiliation\sigline\par 
+%         \vspace{18pt}
+%             }
+%         }
+%     }
+%     \vspace{18pt}
+%     \vbox{\parbox[t]{\linewidth}{\noindent\singlespacing\justifying
+%     \setlength{\parindent}{0pt}
+%     \hyphenpenalty=10000
+%     I certify that this thesis which has been accepted by the jury satisfies all the requirements as a thesis for the degree of \@thesisdegree.\par}}
+%     \vspace{18pt}
+%     \vbox{\singlespacing
+%         \raggedleft
+%         \@departmentheadtitle\ \@departmentheadname\par\noindent
+%         \@departmentheadposname\par
+%     }
+%     \vspace{18pt}
+%     \raggedright
+%     \vbox{\singlespacing
+%         Approval of The Graduate School\par
+%         \vspace{0.5cm}
+%         \raggedleft
+%         \@directortitle\ \@directorname\par\noindent
+%         \@directorposname\par
+%     }
+%     \newpage
+% }
+
+% \newcommand{\makeapprovaltr}{%
+%     \thispagestyle{empty}
+%     \normalfont\mdseries 
+%     \setlength{\parindent}{0pt}
+%     \hyphenpenalty=10000
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying\noindent
+%     \@authorname\ tarafından hazırlanan \textbf{``\@thesistitletr''} adlı bu çalışma, \@approvaldate\ tarihinde aşağıdaki jüri tarafından oy birliği  ile  \MakeUppercase{\@departmentnametr}'nda  \textbf{\MakeUppercase{\@thesistypetr}} olarak kabul edilmiştir.\par}}
+%     \vspace{48pt}
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing\justifying
+%     \noindent\@supervisorpostr: \@supervisortitletr\ \@supervisorname \par
+%     \noindent\@supervisoraffiliationtr\sigline\par 
+%     \vspace{18pt}
+
+%     \ifx\@cosupervisor\undefined\else
+%         \noindent\@cosupervisorpostr: \@cosupervisortitletr\ \@cosupervisorname \par
+%         \noindent\@cosupervisoraffiliationtr\sigline\par 
+%         \vspace{18pt}%
+%     \fi
+    
+%     \DTLforeach*{jury}{\title=titletr, \name=name, \role=roletr, \affiliation=affiliationtr}{%
+%         \noindent\role: {\title}\name\par
+%         \noindent\affiliation\sigline\par 
+%         \vspace{18pt}
+%             }
+%         }
+%     }
+%     \vspace{18pt}
+%     \vbox{\parbox[t]{\linewidth}{\noindent\singlespacing\justifying
+%     \setlength{\parindent}{0pt}
+%     \hyphenpenalty=10000
+%     Jüri tarafından kabul edilen bu tezin \@thesisdegree olması için gerekli şartları yerine getirdiğini onaylıyorum.\par}}
+%     \vspace{18pt}
+%     \vbox{\singlespacing
+%         \raggedleft
+%         \@departmentheadtitletr\ \@departmentheadname\par\noindent
+%         \@departmentheadposnametr\par
+%     }
+%     \vspace{18pt}
+%     \raggedright
+%     \vbox{\singlespacing
+%         Lisansüstü Eğitim Enstitüsü Onayı\par
+%         \vspace{0.5cm}
+%         \raggedleft
+%         \@directortitletr\ \@directorname\par\noindent
+%         \@directorposnametr\par
+%     }
+%     \newpage
+% }
 
 % Abstract
 \newcommand{\makeabstract}{%
@@ -516,10 +922,10 @@
 
 % Acknowledgement
 \newcommand{\makeacknowledgement}{%
-    \addcontentsline{toc}{chapter}{ACKNOWLEDGEMENTS}
+    \addcontentsline{toc}{chapter}{\@acklabel}
     \thispagestyle{plain}
     \centering
-    \vbox{\largerfont\textbf{ACKNOWLEDGEMENTS}\par}
+    \vbox{\largerfont\textbf{\@acklabel}\par}
     \vspace{28pt}
     {%
         \setlength{\parindent}{0pt}% Remove paragraph indentation
@@ -527,8 +933,15 @@
         \justifying
         \begin{minipage}{\dimexpr\textwidth-1cm\relax}
             \setlength{\parskip}{12pt}% Increase space between paragraphs
+    \ifx\@thesislang\@trthesis
+            \@acknowledgementtexttr
+            \par \LaTeX'de yazıldı.
+
+    \else
             \@acknowledgementtext
-            (written in \LaTeX)
+            \par Written in \LaTeX.
+
+    \fi
         \end{minipage}%
     }%
     \vspace{28pt}
@@ -542,16 +955,29 @@
 }
 
 \newcommand{\maketextofoath}{%
-    \addcontentsline{toc}{chapter}{TEXT OF OATH}   
+    \ifx\@thesislang\@trthesis
+        \addcontentsline{toc}{chapter}{YEMİN METNİ}   
+    \else
+        \addcontentsline{toc}{chapter}{TEXT OF OATH}   
+    \fi
     \thispagestyle{plain}
     \begin{center}
-    {\bfseries\largerfont TEXT OF OATH}
+    {\bfseries\largerfont 
+    \ifx\@thesislang\@trthesis
+        YEMİN METNİ
+    \else
+        TEXT OF OATH
+    \fi}
     \end{center}
     \setlength{\parindent}{0pt} 
     \vspace{28pt}
     \vbox{\parbox[t]{\linewidth}{
     \singlespacing
-    The study I presented as my {\@thesistype} titled {\bfseries``\@thesistitle''} has been written without resorting to any  assistance  inconsistent  with  the scientific  ethics  and traditions, and all sources I have benefited from are listed in bibliography and I have used them by means of making references and I declare and confirm this on my honor.}}
+    \ifx\@thesislang\@trthesis
+        {\@thesistypetr} olarak sunduğum {\bfseries``\@thesistitletr''} adlı çalışmanın tarafımdan bilimsel ahlak ve geleneklere aykırı düşecek bir yardıma başvurmaksızın yazıldığını ve yararlandığım eserlerin bibliyografyada gösterilenlerden oluştuğunu, bunlara atıf yapılarak yararlanılmış olduğunu belirtir ve bunu onurumla doğrularım.
+    \else
+        The study I presented as my {\@thesistype} titled {\bfseries``\@thesistitle''} has been written without resorting to any assistance inconsistent with the scientific ethics and traditions, and all sources I have benefited from are listed in bibliography and I have used them by means of making references and I declare and confirm this on my honor.
+    \fi}}
     \vspace{28pt}
     \vbox{\parbox[t]{\linewidth}{\singlespacing
      \raggedleft
@@ -560,7 +986,45 @@
     }}
     \newpage
 }
+% \newcommand{\maketextofoath}{%
+%     \addcontentsline{toc}{chapter}{TEXT OF OATH}   
+%     \thispagestyle{plain}
+%     \begin{center}
+%     {\bfseries\largerfont TEXT OF OATH}
+%     \end{center}
+%     \setlength{\parindent}{0pt} 
+%     \vspace{28pt}
+%     \vbox{\parbox[t]{\linewidth}{
+%     \singlespacing
+%     The study I presented as my {\@thesistype} titled {\bfseries``\@thesistitle''} has been written without resorting to any  assistance  inconsistent  with  the scientific  ethics  and traditions, and all sources I have benefited from are listed in bibliography and I have used them by means of making references and I declare and confirm this on my honor.}}
+%     \vspace{28pt}
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing
+%      \raggedleft
+%        \@authorname\ \\
+%         \@approvaldate\par\noindent
+%     }}
+%     \newpage
+% }
 
+% \newcommand{\maketextofoathtr}{%
+%     \addcontentsline{toc}{chapter}{YEMİN METNİ}   
+%     \thispagestyle{plain}
+%     \begin{center}
+%     {\bfseries\largerfont YEMİN METNİ}
+%     \end{center}
+%     \setlength{\parindent}{0pt} 
+%     \vspace{28pt}
+%     \vbox{\parbox[t]{\linewidth}{
+%     \singlespacing
+%     {\@thesistypetr}  olarak sunduğum {\bfseries``\@thesistitletr''} adlı çalışmanın tarafımdan bilimsel ahlak ve geleneklere aykırı düşecek bir yardıma başvurmaksızın yazıldığını ve yararlandığım eserlerin bibliyografyada gösterilenlerden oluştuğunu, bunlara atıf yapılarak yararlanılmış olduğunu belirtir ve bunu onurumla doğrularım.}}
+%     \vspace{28pt}
+%     \vbox{\parbox[t]{\linewidth}{\singlespacing
+%      \raggedleft
+%        \@authorname\ \\
+%         \@approvaldate\par\noindent
+%     }}
+%     \newpage
+% }
 
 \newcommand{\frontmatter}{%
     \clearpage
@@ -590,18 +1054,73 @@
   \fancyfoot[C]{\thepage}% Page number in center of footer
   \renewcommand{\headrulewidth}{0pt}% No header rule
   \renewcommand{\footrulewidth}{0pt}% No footer rule
+  \ifx\@thesislang\@trthesis
+    \def\@tocl{İÇİNDEKİLER}
+    \renewcommand{\cfttoctitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftaftertoctitle}{\hfil}
+    \renewcommand{\contentsname}{İÇİNDEKİLER}
+    
+    \def\@lof{ŞEKİLLER DİZİNİ}
+    \renewcommand{\cftloftitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftafterloftitle}{\hfil}
+    \renewcommand{\listfigurename}{ŞEKİLLER DİZİNİ}
+
+    \def\@lot{ÇİZELGELER DİZİNİ}
+    \renewcommand{\cftlottitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftafterlottitle}{\hfil}
+    \renewcommand{\listtablename}{ÇİZELGELER DİZİNİ}
+
+    \def\@loab{SİMGELER VE KISALTMALAR}
+    \def\@chapterslabel{BÖLÜM}
+    \def\@bibliographylabel{KAYNAKÇA}
+    \def\@cvlabel{ÖZGEÇMİŞ}
+    \def\@APPENDIXlabel{EK}
+    \def\@figureslabel{ŞEKİLLER DİZİNİ}
+    \def\@tableslabel{ÇİZELGELER DİZİNİ}
+    \def\@acklabel{TEŞEKKÜR}
+    \def\@supplabel{EKLER}
+    \def\@figurelabel{Şekil}
+    \def\@tablelabel{Çizelge}
+    \def\@eqnlabel{Denklem}
+    \def\@alglabel{Algoritma}
+    \def\@pagelabel{Sayfa}
+
+\else
+
+    \def\@tocl{TABLE OF CONTENTS}
+    \renewcommand{\cfttoctitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftaftertoctitle}{\hfil}
+    \renewcommand{\contentsname}{TABLE OF CONTENTS}
+    
+    \def\@lof{LIST OF FIGURES}
+    \renewcommand{\cftloftitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftafterloftitle}{\hfil}
+    \renewcommand{\listfigurename}{LIST OF FIGURES}
+
+    \def\@lot{LIST OF TABLES}
+    \renewcommand{\cftlottitlefont}{\hfil\fontsize{14}{17}\selectfont\bfseries}
+    \renewcommand{\cftafterlottitle}{\hfil}
+    \renewcommand{\listtablename}{LIST OF TABLES}
+    
+    \def\@loab{LIST OF ABBREVIATIONS}
+    \def\@acklabel{ACKNOWLEDGEMENTS}
+    \def\@chapterslabel{CHAPTERS}
+    \def\@bibliographylabel{REFERENCES}
+    \def\@cvlabel{CURRICULUM VITAE}
+    \def\@supplabel{SUPPLEMENTARY MATERIAL}
+    \def\@figureslabel{FIGURES}
+    \def\@tableslabel{TABLES}
+    \def\@figurelabel{Figure}
+    \def\@tablelabel{Table}
+    \def\@eqnlabel{Equation}
+    \def\@alglabel{Algorithm}
+    \def\@pagelabel{Page}
+\fi
 }
 
-\def\@tocl{LIST OF CONTENTS}
-\def\@lot{LIST OF TABLES}
-\def\@lof{LIST OF FIGURES}
-\def\@loab{LIST OF ABBREVIATIONS}
-\def\@chapterslabel{CHAPTERS}
-\def\@bibliographylabel{BIBLIOGRAPHY}
-\def\@APPENDIXlabel{APPENDICES}
-\def\@figureslabel{FIGURES}
-\def\@tableslabel{TABLES}
-\def\@tablelabel{Table}
+% \typeout{Debug TOC: thesislang is [\@thesislang]}
+% \typeout{Debug TOC: trthesis is [\@trthesis]}
+
 
 % Chapter entries
 \renewcommand{\cftchapleader}{\cftdotfill{\cftchapdotsep}}
@@ -729,10 +1248,6 @@
 \counterwithin{figure}{chapter}
 \counterwithin{table}{chapter}
 
-\renewcommand{\contentsname}{LIST OF CONTENTS}
-\renewcommand{\listfigurename}{LIST OF FIGURES}
-\renewcommand{\listtablename}{LIST OF TABLES}
-
 \newcommand{\newlistoffigures}{%
     \begingroup
     \singlespacing
@@ -740,15 +1255,29 @@
         \largerfont\bfseries{\listfigurename}
     \end{center}
     \hfill\null\\\null\hfill
-    \makebox[0.86\textwidth][l]{\textbf{Figure}}\hfill
-    \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
+    \makebox[0.86\textwidth][l]{\textbf{\@figurelabel}}\hfill
+    \makebox[3em][r]{\textbf{\@pagelabel}}\hspace{-0.3em}\vspace{-2.5em}
     % \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
     \vspace{28pt}  % Add some space after the title
     \setstretch{1.5} 
     \@starttoc{lof}%
     \endgroup
 }
-
+\newcommand{\newlistoffigurestr}{%
+    \begingroup
+    \singlespacing
+    \begin{center}
+        \largerfont\bfseries{\listfigurename}
+    \end{center}
+    \hfill\null\\\null\hfill
+    \makebox[0.86\textwidth][l]{\textbf{\@figurelabe}}\hfill
+    \makebox[3em][r]{\textbf{\@pagelabel}}\hspace{-0.3em}\vspace{-2.5em}
+    % \makebox[3em][r]{\textbf{Page}}\hspace{-0.3em}\vspace{-2.5em}
+    \vspace{28pt}  % Add some space after the title
+    \setstretch{1.5} 
+    \@starttoc{lof}%
+    \endgroup
+}
 \newcommand{\newlistoftables}{%
     \begingroup
     \singlespacing
@@ -763,12 +1292,25 @@
     \@starttoc{lot}
     \endgroup
 }
-
+\newcommand{\newlistoftablestr}{%
+    \begingroup
+    \singlespacing
+    \begin{center}
+        \largerfont\bfseries{\listtablename}
+    \end{center}
+    \hfill\null\\\null\hfill
+    \makebox[0.86\textwidth][l]{\textbf{\@tablelabel}}\hfill
+    \makebox[3em][r]{\textbf{\@pagelabel}}\hspace{-0.3em}\vspace{-2.5em}
+    \vspace{28pt}  % Add some space after the title
+    \setstretch{1.5}
+    \@starttoc{lot}
+    \endgroup
+}
 \newcommand{\makelistofabbreviations}{%
-    \addcontentsline{toc}{chapter}{LIST OF ABBREVIATIONS}
+    \addcontentsline{toc}{chapter}{\@loab}
     \thispagestyle{plain}
     \begin{center}
-    {\bfseries\largerfont LIST OF ABBREVIATIONS}
+    {\bfseries\largerfont \@loab}
     \vspace{28pt}  % Add some space after the title
     
     \end{center}
@@ -782,21 +1324,36 @@
 
 % List of contents, figures, tables, abbreviations
 \newcommand{\makefrontmatter}{%
-    \addcontentsline{toc}{chapter}{LIST OF CONTENTS}
+    \addcontentsline{toc}{chapter}{\@tocl}
     \tableofcontents
   % {\singlespacing\listofcontents}
     \normalsize
     \clearpage
-    \addcontentsline{toc}{chapter}{LIST OF FIGURES}
+    \addcontentsline{toc}{chapter}{\@lof}
     \newlistoffigures
     \clearpage
-    \addcontentsline{toc}{chapter}{LIST OF TABLES}
+    \addcontentsline{toc}{chapter}{\@lot}
     \newlistoftables
     \clearpage
     \makelistofabbreviations
     \clearpage
 }
 
+% \newcommand{\makefrontmattertr}{%
+%     \addcontentsline{toc}{chapter}{İÇİNDEKİLER}
+%     \tableofcontents
+%   % {\singlespacing\listofcontents}
+%     \normalsize
+%     \clearpage
+%     \addcontentsline{toc}{chapter}{ŞEKİLLER DİZİNİ}
+%     \newlistoffigures
+%     \clearpage
+%     \addcontentsline{toc}{chapter}{ÇİZELGELER DİZİNİ}
+%     \newlistoftables
+%     \clearpage
+%     \makelistofabbreviations
+%     \clearpage
+% }
 
 % Arabic numeral pages
 \newcommand{\mainmatter}{%
@@ -826,7 +1383,7 @@
 \newcommand{\makereferences}{%
     \clearpage
     \phantomsection
-    \addcontentsline{toc}{chapter}{REFERENCES}
+    \addcontentsline{toc}{chapter}{\@bibliographylabel}
     \fancypagestyle{references}{%
         \fancyhf{}  % Clear all header and footer fields
         \fancyfoot[C]{\thepage}  % Page number at the bottom center
@@ -835,19 +1392,18 @@
     }
     \pagestyle{references}
     \begin{center}
-        \largerfont\textbf{REFERENCES}
+        \largerfont\textbf{\@bibliographylabel}
     \end{center}
     \vspace{48pt}
     \printbibliography[heading=none]
 }
 
-% Curriculum Vitae
 \newcommand{\makecv}{%
     \clearpage
     \phantomsection
-    \addcontentsline{toc}{chapter}{CURRICULUM VITAE}
+    \addcontentsline{toc}{chapter}{\@cvlabel}
     \begin{center}
-    {\bfseries\largerfont CURRICULUM VITAE}
+    {\bfseries\largerfont \@cvlabel}
     \end{center}
     \vspace{48pt}
     \input{cv}  
@@ -871,9 +1427,9 @@
 \newcommand{\makesupplementary}{%
     \clearpage
     \phantomsection
-    \addcontentsline{toc}{chapter}{SUPPLEMENTARY MATERIAL}
+    \addcontentsline{toc}{chapter}{\@supplabel}
     \begin{center}
-    {\bfseries\largerfont SUPPLEMENTARY MATERIAL}
+    {\bfseries\largerfont \@supplabel}
     \end{center}
     \vspace{48pt}
     \input{supplementary}

@@ -1,13 +1,196 @@
-\documentclass{kgtu}
+\documentclass[turkish,bibstyle=apa]{kgtu}
+%For English uncomment the following line
+% \documentclass[english]{kgtu}
+%Türkçeyle ilgili garip bir sorun vardı, Türkçe paketini yükleyince giç alakası olmadığı halde grafikler bozuluyor, sorunun kaynağını bulup çözdüm.
+%You can use bibstyle=apa or bibstyle=ieee in any language.
+%Generall, engineering uses IEEE style, Social Sciences use APA.
 
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage[linesnumbered,ruled,vlined]{algorithm2e}
 
 %required for Lorem Ipsum. Delete these in your real thesis.
 \usepackage{lipsum}
-\usepackage[base]{babel}
 
+  
 \begin{document}
+
+%These two lines are for language selection.
+%There is another pair at the end. Please remove the lines in the real thesis writing.
+
+\makeatletter
+\ifx\@thesislang\@trthesis
+
+\chapter{GİRİŞ}
+Bir doktora tezi, yıllar süren titiz araştırma ve akademik çabanın doruk noktasını temsil eder. Çalışma alanına önemli bir katkı sağlamalı, yazarın uzmanlığını ve özgün araştırma yapma yeteneğini göstermelidir \cite{oztoprak2023technological}. Etkili bir tez, tüm çalışmanın sahnesini hazırlayan net ve özlü bir giriş ile başlar. Bu kritik bölüm, araştırma alanına genel bir bakış sunmalı, ele alınan spesifik problem veya soruya doğru kademeli olarak daraltılmalıdır. Araştırma hedeflerini açıkça ifade etmek, çalışmanın önemini vurgulamak ve metodolojik yaklaşımı kısaca özetlemek esastır \cite{butun2021application}. Giriş ayrıca araştırmayı mevcut bilgi birikimine yerleştirmeli, tezin doldurmayı amaçladığı mevcut anlayıştaki boşlukları belirlemelidir. Giriş bölümünün sonunda, okuyucular tezin amacını, alandaki potansiyel etkisini ve sonraki bölümlerin yapısını net bir şekilde anlamalıdır. İyi hazırlanmış bir giriş sadece okuyucuyu cezbetmekle kalmaz, aynı zamanda takip eden araştırma konusunun kapsamlı keşfi için bir yol haritası görevi görür \cite{oztoprak2023holistic}.
+
+\section{Örnek Bölüm}
+Bu bir örnek bölümdür. Bunun bir numarası olmalıdır.
+\lipsum[1-3]
+
+\subsection{Örnek Alt Bölüm}
+Bu bir örnek alt bölümdür. Bunun da bir numarası olmalıdır.
+\lipsum[4-5]
+
+\subsubsection{Örnek Alt Alt Bölüm}
+Bu bir örnek alt alt bölümdür. Bunun bir numarası olmamalıdır.
+\lipsum[6-7]
+
+\chapter{ARKA PLAN}
+
+Bu bir örnek uzun tablodur. Bu \ref{tab:sample_longtable}'de anlatıldığı gibi, bir sonraki sayfada devam edecektir.
+\begin{raggedright}
+\begin{footnotesize}
+\begin{longtable}{{p{0.47\linewidth} p{0.22\linewidth} p{0.22\linewidth}}}
+\caption{Bilgisayar Bilimlerinde Kapsamlı Araştırma Konuları}
+\label{tab:sample_longtable}\\
+\hline
+\textbf{Araştırma Konusu} & \textbf{Temel Yöntemler} & \textbf{Zorluklar} \\
+\hline
+\endfirsthead
+
+\caption[]{Bilgisayar Bilimlerinde Kapsamlı Araştırma Konuları (Devam)}\\
+\hline
+\textbf{Araştırma Konusu} & \textbf{Temel Yöntemler} & \textbf{Zorluklar} \\
+\hline
+\endhead
+
+Artificial Intelligence in Healthcare & Machine Learning, Neural Networks & Data privacy, Model interpretability \\
+
+Quantum Computing Algorithms & Quantum circuits, Shor's algorithm & Scalability, Error correction \\
+
+Blockchain for Supply Chain Management & Distributed ledger, Smart contracts & Energy consumption, Scalability \\
+
+Natural Language Processing for Sentiment Analysis & Deep Learning, BERT models & Contextual understanding, Multilingual support \\
+
+Edge Computing for IoT & Fog computing, Edge analytics & Security, Resource constraints \\
+
+Autonomous Vehicles & Computer vision, Reinforcement learning & Safety, Ethical decision-making \\
+
+Cybersecurity in 5G Networks & Encryption, Intrusion detection & New attack vectors, Latency requirements \\
+
+Virtual and Augmented Reality & 3D modeling, Motion tracking & User experience, Hardware limitations \\
+
+Big Data Analytics in Social Media & Data mining, Predictive modeling & Data volume, Real-time processing \\
+
+Green Computing & Energy-efficient algorithms, Sustainable hardware & Performance trade-offs, Implementation costs \\
+
+Bioinformatics and Genomic Data Analysis & Sequence alignment, Phylogenetic analysis & Data complexity, Computational efficiency \\
+
+Cloud Computing Optimization & Virtualization, Load balancing & Resource allocation, Data sovereignty \\
+
+Human-Computer Interaction & User interface design, Usability testing & Accessibility, Cross-cultural design \\
+
+Robotic Process Automation & Workflow analysis, Intelligent automation & Process complexity, Integration challenges \\
+
+Computer Vision for Medical Imaging & Image segmentation, Pattern recognition & Accuracy, Interpretability \\
+
+Distributed Systems for Big Data & MapReduce, Distributed file systems & Fault tolerance, Network latency \\
+
+Artificial General Intelligence & Cognitive architectures, Transfer learning & Ethical concerns, Unpredictability \\
+
+Quantum Cryptography & Quantum key distribution, Entanglement & Implementation costs, Key rate limitations \\
+
+Internet of Things (IoT) Security & Device authentication, Secure protocols & Device heterogeneity, Limited resources \\
+
+Explainable AI (XAI) & Layer-wise relevance propagation, SHAP values & Model complexity, Human comprehension \\
+
+Federated Learning & Decentralized ML, Secure aggregation & Communication overhead, Model convergence \\
+
+Software-Defined Networking & Network virtualization, Programmable switches & Backward compatibility, Controller scalability \\
+
+Neuromorphic Computing & Spiking neural networks, Memristive devices & Hardware design, Algorithm adaptation \\
+
+Privacy-Preserving Machine Learning & Differential privacy, Homomorphic encryption & Utility-privacy trade-off, Computational overhead \\
+
+Serverless Computing & Function-as-a-Service, Event-driven architecture & Cold start latency, State management \\
+
+Swarm Intelligence & Particle swarm optimization, Ant colony algorithms & Parameter tuning, Local optima \\
+
+Adversarial Machine Learning & Generative adversarial networks, Robust optimization & Attack detection, Model resilience \\
+
+Quantum Machine Learning & Quantum neural networks, Quantum support vector machines & Quantum hardware limitations, Algorithm design \\
+
+Ethics in AI & Fairness-aware ML, Bias detection & Defining fairness, Balancing competing objectives \\
+
+High-Performance Computing & Parallel processing, GPU acceleration & Power consumption, Algorithm parallelization \\
+
+\hline
+\end{longtable}
+\end{footnotesize}
+\end{raggedright}
+\lipsum[8-12]
+
+\chapter{YÖNTEMLER}
+\lipsum[13-15]
+
+\chapter{DENEYSEL ÇALIŞMALAR}
+Bu bir örnek tablodur. Buna \ref{tab:sample_table} olarak atıfta bulunmalısınız. Çizelge başlığı otomatik olarak biçimlendirilecektir.
+
+\begin{table}[ht]
+    \caption{Örnek Tablo}
+    \label{tab:sample_table}
+    \begin{flushleft}
+    \begin{tabularx}{\textwidth}{Xcc}
+    \toprule
+    \textbf{Kategori} & \textbf{Öğe} & \textbf{Özellik} \\
+    \midrule
+    Satır 1 & Değer 1A & Değer 1B \\
+    Satır 2 & Değer 2A & Değer 2B \\
+    \midrule
+    Satır 3 & Değer 3A & Değer 3B \\
+    Satır 4 & Değer 4A & Değer 4B \\
+    Satır 5 & Değer 5A & Değer 5B \\
+    \bottomrule
+    \end{tabularx}
+    \end{flushleft}
+\end{table}
+
+Bu bir örnek şekildir. Buna \ref{fig:sample_figure} olarak atıfta bulunmalısınız.
+% \begin{figure}[!ht]
+%     \centering
+%     \includegraphics[width=1.0\textwidth]{figures/fig1.png}
+%     \caption{Bir grafik gösteren örnek şekil}
+%     \label{fig:sample_figure}
+% \end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \shorthandoff{=}
+    \includegraphics[width=\textwidth]{figures/fig1.png}
+    \shorthandon{=}
+    \caption{Grafik gösteren örnek şekils}
+    \label{fig:sample_figure}
+\end{figure}
+
+Bu örnek bir algoritmadır. Buna \ref{alg:bubblesort} olarak atıfta bulunabilirsiniz.
+
+\begin{algorithm}
+\caption{Örnek Algoritma: Kabarcık Sıralaması}
+\label{alg:bubblesort}
+\KwIn{n elemanlı bir A dizisi}
+\KwOut{Artan sırada sıralanmış A dizisi}
+\Begin{
+    \For{i = 0 to n - 1}{
+        \For{j = 0 to n - i - 1}{
+            \If{A[j] > A[j + 1]}{
+                A[j] ve A[j + 1]'i değiştir
+            }
+        }
+    }
+}
+\end{algorithm}
+
+Bu örnek bir denklemdir. Buna \ref{eqn:quadratic} olarak atıfta bulunabilirsiniz.
+
+\begin{equation}
+    \label{eqn:quadratic}
+    x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+\end{equation}
+
+\chapter{SONUÇ VE GELECEK ÇALIŞMALAR}
+\lipsum[15-20]
+\else
+
 \chapter{INTRODUCTION}
 A doctoral thesis represents the culmination of years of rigorous research and academic pursuit. It should embody a significant contribution to the field of study, demonstrating the author's expertise and ability to conduct original research \cite{oztoprak2023technological}. An effective thesis begins with a clear and concise introduction that sets the stage for the entire work. This crucial section should provide a broad overview of the research area, gradually narrowing down to the specific problem or question being addressed. It is essential to articulate the research objectives, highlight the significance of the study, and briefly outline the methodological approach \cite{butun2021application}. The introduction should also situate the research within the existing body of knowledge, identifying gaps in current understanding that the thesis aims to fill. By the end of the introduction, readers should have a clear understanding of the thesis's purpose, its potential impact on the field, and the structure of the subsequent chapters. A well-crafted introduction not only engages the reader but also serves as a roadmap for the comprehensive exploration of the research topic that follows \cite{oztoprak2023holistic}.
 \section{Sample Section}
@@ -164,5 +347,10 @@ This is a sample equation. You can refer it as \ref{eqn:quadratic}.
 \end{equation}
 \chapter{CONCLUSION AND FUTURE WORK}
 \lipsum[15-20]
+
+
+%Remove these two lines after removing the first two.
+\fi
+\makeatother
 
 \end{document}
